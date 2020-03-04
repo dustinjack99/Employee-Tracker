@@ -32,7 +32,8 @@ const start = () => {
         "Add Employee",
         "Add Department",
         "Add Role",
-        "Update Role"
+        "Update Role",
+        "Exit"
       ]
     })
     .then(function (answer) {
@@ -63,6 +64,10 @@ const start = () => {
 
         case "Update Role":
           updateRole();
+          break;
+
+        case "Exit":
+          exit();
           break;
       }
     });
@@ -119,24 +124,33 @@ const addEmployee = () => {
                 }
                 const roleId = results[0].id;
                 connection.query(
-                  `insert into employee (first_name, last_name, role_id, manager_id, department)
-                  values ('${empFirst}', '${empLast}', ${roleId}, null, '${empDept}')`,
-
+                  `select * from employee where role_id = 1`,
                   (err, results) => {
-                    if(err) {
+                    if (err) {
                       throw err;
                     }
-                    console.log(results)
-                    start();
-                  }
-                )
-              }
-            )
+                    for (let i = 0; i < results.length; i++) {
+                      if (results[i].department === empDept) {
+                        const managerId = results[i].id;
+                        connection.query(
+                          `insert into employee (first_name, last_name, role_id, manager_id, department)
+                          values ('${empFirst}', '${empLast}', ${roleId}, ${managerId}, '${empDept}')`,
+                          (err) => {
+                            if (err) {
+                              throw err;
+                            }
+                            console.log('Employee added!')
+                            start();
+
+                          }
+                        )
+                      }
+                    }
+                  })
+              })
           })
-        }
-      )
-    }
-  );
+        })
+    });
 }
 
 const addDepartment = () => {
@@ -241,3 +255,8 @@ const viewRole = () => {
 const updateRole = () => {
   console.log(answer.action);
 };
+
+const exit = () => {
+  console.log('Goodbye!')
+  connection.end();
+}
