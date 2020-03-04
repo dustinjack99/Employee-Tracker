@@ -139,19 +139,17 @@ const addEmployee = () => {
                             if (err) {
                               throw err;
                             }
-                            console.log('Employee added!')
+                            console.log('Employee added!');
                             start();
-
-                          }
-                        )
-                      }
-                    }
-                  })
-              })
-          })
-        })
+                          });
+                      };
+                    };
+                  });
+              });
+          });
+        });
     });
-}
+};
 
 const addDepartment = () => {
   inquirer
@@ -228,13 +226,12 @@ const viewDepartment = () => {
       })
       .then(function (answer) {
         connection.query(
-          "select * from employee where ?? = ?",
-          ["department", `'${answer.deptSelect}'`],
+          `select * from employee where department = '${answer.deptSelect}'`,
           (err, results) => {
             if (err) {
               throw err;
             }
-            console.log(results);
+            console.table(results)
             start();
           }
         );
@@ -247,13 +244,90 @@ const viewRole = () => {
     if (err) {
       throw err;
     }
-    results.forEach(e => console.log(`${e.title}: $${e.salary}`));
-    start();
+    const roleList = results.map(e => e.title);
+    inquirer
+      .prompt({
+        message: "Which role would you like to view?",
+        name: "roleSelect",
+        type: "list",
+        choices: roleList
+      })
+      .then(function (answer) {
+        connection.query(
+          `select employee.first_name, employee.last_name, role.title, employee.department
+          from employee
+          left join role on employee.role_id=role.id  where role.title = "${answer.roleSelect}"`,
+          (err, results) => {
+            if (err) {
+              throw err;
+            }
+            console.table(results)
+            start();
+          }
+        );
+      });
   });
 };
 
 const updateRole = () => {
-  console.log(answer.action);
+  connection.query(
+    'select * from department',
+    (err, results) => {
+      if (err) {
+        throw err;
+      }
+      let depts = results.map(e => e.name)
+      inquirer.prompt({
+        message: "Which department does the Employee work?",
+        type: "list",
+        name: "dept",
+        choices: depts
+      }).then(function(answer) {
+        connection.query(
+          `select * from employee where department = '${answer.dept}'`,
+          (err, results) => {
+            if(err) throw err;
+            const empSelect = results.map(e => e.first_name)
+            inquirer.prompt({
+              message: "Which employee would you like to promote/demote?",
+              type: "list",
+              name: "employee",
+              choices: empSelect
+            }).then(function(answer) {
+              const emp = answer.employee
+              connection.query(
+                'select * from role',
+                (err, results) => {
+                  if(err) throw err;
+                  const roles = results.map(e => e.title)
+                  inquirer.prompt({
+                    message: "What role will they have?",
+                    type: "list",
+                    name: "roleChange",
+                    choices: roles
+                  }).then(function(answer) {
+                    for (let i = 0; i < results.length; i++) {
+                    if (answer.roleChange === results[i].title)
+                    connection.query(
+                      `update employee 
+                      set role_id = ${results[i].id}
+                      where first_name = '${emp}'`,
+                      (err) => {
+                        if(err) throw err;
+                        console.log('role updated!')
+                        start();
+                      }
+                    )
+                    }
+                  })
+                }
+              )
+            })
+          }
+        )
+      })
+    }
+  )
 };
 
 const exit = () => {
