@@ -26,9 +26,23 @@ When View Role is chosen, all roles within the company will be listed. When a ro
 ## Use Case Example
 Now let's say a company is starting a new department from scratch. Microsoft is relaunching a branch of Microsoft Office, and needs to build their employee base from the ground up.
 
+### Add Department
+The first step is adding the Department 'Microsoft Office'. This will populate an empty row in the 'departments' table of our database.
+
+![](assets/adddept.gif)
+
+
+
+### Add Role
+Next we have the need for some jobs. Every department will need sanitation staff, so let's add a janitor. 
+
+![](assets/addrole.gif)
+
+
+
+### Add Employee
+After the groundwork has been laid, we can hire on our janitor for Microsoft Office! We've had a lot of applicants, but one standout - a bright, eager employee named Donald Duck.
 
 ![](assets/addemp.gif)
-![](assets/adddept.gif)
-![](assets/addrole.gif)
 ![](assets/testall.gif)
 ![](assets/updaterole.gif)
