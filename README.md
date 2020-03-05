@@ -48,14 +48,14 @@ Next we have the need for some jobs. Every department will need sanitation staff
 
 
 ### Testing Integration
-So now we have our department, 'Microsoft Office'; a new role, 'Janitor'; all we need is a new hire! We've screened many potentials, but one has risen to the top: an eager young worker named Donald Duck. After hiring him as a janitor, placing him in the new department, we can see with Employee Tracker that he's been successfully implemented into the system.
+So now we have our department, 'Microsoft Office'; a new role, 'Janitor'; all we need is a new hire! We've screened many potentials, but one has risen to the top: an eager young worker named Donald Duck. After hiring him as a janitor, placing him in the new department, we can see with Employee Tracker that he's been successfully implemented into the system. His role 'Janitor' has a role_id of 6.
 
 ![](assets/testall.gif)
 
 
 
 ### Update Role
-There's one last function we need to test- update role. Some months have passed, and our enterprising Donald Duck has been studying programming. His managers have noticed, and after passing his interviews, Donald has been promoted to a full-fledged engineer! Once we select his new position, 'Engineer', the ex-Janitor now has a much larger part in the Microsoft family.  
+There's one last function we need to test- update role. Some months have passed, and our enterprising Donald Duck has been studying programming. His managers have noticed, and after passing his interviews, Donald has been promoted to a full-fledged engineer! Once we select his new position, 'Engineer', the ex-Janitor now has a much larger part in the Microsoft family. We can see his role_id has been updated to 2 (from 6), signifying he's been moved to an Engineering position. 
 
 ![](assets/updaterole.gif)
 
