@@ -34,7 +34,7 @@ The first step is adding the Department 'Microsoft Office'. This will populate a
 
 
 ### Add Role
-Next we have the need for some jobs. Every department will need sanitation staff, so let's add a janitor. 
+Next we have the need for some jobs. Every department will need sanitation staff, so let's add a janitor. We have the option to choose a salary, so let's start off at $30,000. The role info will be added to the role table. Like the department we made, it will read as empty until we give it some employee data.
 
 ![](assets/addrole.gif)
 
