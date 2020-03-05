@@ -79,13 +79,13 @@ Lots and lots and lots of testing the functions. If I had to choose a favorite p
 ## Challenges
 This is the most thorough readme I've ever made - simply because there's so much functionality to show off. Honestly, this readme has taken two hours. 
 
-I would have loved to take a tackle at the bonus functions, unfortunately the rest of my week is stacked. I had Wed / Thurs to hit the books, and that's all I could do in scope of time I had.
+I would have loved to take a tackle at the bonus functions, unfortunately the rest of my week is stacked. I had Wed / Thurs to hit the books, and that's all I could do within the scope of time I had.
 
 SQL queries! Holy cow what a nightmare. The largest walls I hit were figuring out the syntax of SQL queries. I still haven't fully conceptualized JOINS, although I know that will come with repetition and practice. 
 
 
 
 ## Final Thoughts
-It's definitely a project I'm proud of. It's not perfect, it's still got a few bugs (ex. - you can't add employees to a department unless it has a manager), but this homework is definitely close to an MVP. Now that we're utilizing databases, a whole new world opens up. For some reason, my mind always goes to a game I could make with every tool we learn. With databases, I definitely see people being able to have individual accounts, tied to whatever data the game needs to function. (Say like an MMORPG avatar, complete with all its gear and stats - or maybe a collectible card game that stores what your card collection is). 
+It's definitely a project I'm proud of. It's not perfect, it's still got a few bugs (ex. - you can't add employees to a department unless it has a manager), but this homework is definitely close to an MVP. Now that we're utilizing databases, a whole new world opens up. For some reason, I always envision a game that could make with every tool we learn. With databases, I see users able to have individual accounts, tied to whatever data the game needs to function. (Say like an MMORPG avatar, complete with all its gear and stats - or maybe a collectible card game that stores what your card collection is). 
 
-The last parts I'm chomping at the bits to learn - mongo and react. Project 2 comes first, but I can't wait to learn how powerful those tools are, too.
+The last parts of the MERN stack are what I'm chomping at the bits to learn - mongo and react. Project 2 comes first, but I can't wait to learn how powerful the last tools are.
