@@ -1,5 +1,5 @@
 # Employee-Tracker
-![](assets/viewemp)
+![](assets/viewemp.gif)
 ![](viewdept)
 ![](viewrole)
 ![](addemp)
