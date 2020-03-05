@@ -9,16 +9,12 @@ const connection = mysql.createConnection({
 });
 
 connection.connect(err => {
-  if (err) {
-    throw err;
-  }
-
+  if (err) throw err;
   console.log(
     `Connection successful! Connected to thread: ${connection.threadId}`
   );
   start();
 });
-
 const start = () => {
   inquirer
     .prompt({
@@ -36,7 +32,7 @@ const start = () => {
         "Exit"
       ]
     })
-    .then(function (answer) {
+    .then(function(answer) {
       switch (answer.action) {
         case "View Employee":
           viewEmployee();
@@ -74,22 +70,16 @@ const start = () => {
 };
 
 const addEmployee = () => {
-  connection.query(
-    'select role.title from role',
-    (err, results) => {
-      if (err) {
-        throw err;
-      }
-      const roles = results.map(e => e.title);
-      connection.query(
-        'select department.name from department',
-        (err, results) => {
-          if (err) {
-            throw err;
-          }
-          const departments = results.map(e => e);
-
-          inquirer.prompt([
+  connection.query("select role.title from role", (err, results) => {
+    if (err) throw err;
+    const roles = results.map(e => e.title);
+    connection.query(
+      "select department.name from department",
+      (err, results) => {
+        if (err) throw err;
+        const departments = results.map(e => e);
+        inquirer
+          .prompt([
             {
               message: "What is their first name?",
               type: "input",
@@ -112,43 +102,54 @@ const addEmployee = () => {
               name: "newDept",
               choices: departments
             }
-          ]).then(function (answer) {
+          ])
+          .then(function(answer) {
             const empDept = answer.newDept;
             const empFirst = answer.firstName;
             const empLast = answer.lastName;
-            connection.query(
-              `select role.id from role where role.title = '${answer.newRole}'`,
-              (err, results) => {
-                if (err) {
-                  throw err;
+            if (answer.newRole == "Manager") {
+              connection.query(
+                `insert into employee (first_name, last_name, role_id, manager_id, department)
+                          values ('${empFirst}', '${empLast}', 1, null, '${empDept}')`,
+                err => {
+                  if (err) throw err;
+                  console.log("Employee added!");
+                  start();
                 }
-                const roleId = results[0].id;
-                connection.query(
-                  `select * from employee where role_id = 1`,
-                  (err, results) => {
-                    if (err) {
-                      throw err;
-                    }
-                    for (let i = 0; i < results.length; i++) {
-                      if (results[i].department === empDept) {
+              );
+            } else {
+              connection.query(
+                `select role.id from role where role.title = '${answer.newRole}'`,
+                (err, results) => {
+                  if (err) throw err;
+                  const roleId = results[0].id;
+                  connection.query(
+                    `select * from employee where role_id = 1`,
+                    (err, results) => {
+                      if (err) throw err;
+                      for (let i = 0; i < results.length; i++) {
                         const managerId = results[i].id;
-                        connection.query(
-                          `insert into employee (first_name, last_name, role_id, manager_id, department)
+                        if (results[i].department == empDept) {
+                          connection.query(
+                            `insert into employee (first_name, last_name, role_id, manager_id, department)
                           values ('${empFirst}', '${empLast}', ${roleId}, ${managerId}, '${empDept}')`,
-                          (err) => {
-                            if (err) {
-                              throw err;
+                            err => {
+                              if (err) throw err;
+                              console.log("Employee added!");
+                              start();
                             }
-                            console.log('Employee added!');
-                            start();
-                          });
-                      };
-                    };
-                  });
-              });
+                          );
+                        }
+                      }
+                    }
+                  );
+                }
+              );
+            }
           });
-        });
-    });
+      }
+    );
+  });
 };
 
 const addDepartment = () => {
@@ -158,15 +159,13 @@ const addDepartment = () => {
       name: "name",
       type: "input"
     })
-    .then(function (answer) {
+    .then(function(answer) {
       const dept = answer.name;
       connection.query(
         `insert into department (name)
           values ('${dept}')`,
         err => {
-          if (err) {
-            throw err;
-          }
+          if (err) throw err;
           console.log("Department added!");
           start();
         }
@@ -189,17 +188,14 @@ const addRole = () => {
         choices: [30000, 40000, 60000, 100000, 150000]
       }
     ])
-    .then(function (answer) {
+    .then(function(answer) {
       const title = answer.name;
       const salary = answer.salary;
       connection.query(
         `insert into role (title, salary)
           values ('${title}', ${salary})`,
         err => {
-          if (err) {
-            throw err;
-          }
-
+          if (err) throw err;
           console.log("Role added!");
           start();
         }
@@ -208,14 +204,8 @@ const addRole = () => {
 };
 
 const viewEmployee = () => {
-  console.log(answer.action);
-};
-
-const viewDepartment = () => {
   connection.query("select * from department", (err, results) => {
-    if (err) {
-      throw err;
-    }
+    if (err) throw err;
     const deptList = results.map(e => e.name);
     inquirer
       .prompt({
@@ -224,14 +214,52 @@ const viewDepartment = () => {
         type: "list",
         choices: deptList
       })
-      .then(function (answer) {
+      .then(function(answer) {
         connection.query(
           `select * from employee where department = '${answer.deptSelect}'`,
           (err, results) => {
-            if (err) {
-              throw err;
-            }
-            console.table(results)
+            if (err) throw err;
+            const empList = results.map(e => e.first_name);
+            inquirer
+              .prompt({
+                message: "Which employee would you like to view?",
+                name: "empSelect",
+                type: "list",
+                choices: empList
+              })
+              .then(function(answer) {
+                connection.query(
+                  `select * from employee where first_name = '${answer.empSelect}'`,
+                  (err, results) => {
+                    if (err) throw err;
+                    console.table(results);
+                    start();
+                  }
+                );
+              });
+          }
+        );
+      });
+  });
+};
+
+const viewDepartment = () => {
+  connection.query("select * from department", (err, results) => {
+    if (err) throw err;
+    const deptList = results.map(e => e.name);
+    inquirer
+      .prompt({
+        message: "Which department would you like to view?",
+        name: "deptSelect",
+        type: "list",
+        choices: deptList
+      })
+      .then(function(answer) {
+        connection.query(
+          `select * from employee where department = '${answer.deptSelect}'`,
+          (err, results) => {
+            if (err) throw err;
+            console.table(results);
             start();
           }
         );
@@ -241,9 +269,7 @@ const viewDepartment = () => {
 
 const viewRole = () => {
   connection.query("select * from role", (err, results) => {
-    if (err) {
-      throw err;
-    }
+    if (err) throw err;
     const roleList = results.map(e => e.title);
     inquirer
       .prompt({
@@ -252,16 +278,14 @@ const viewRole = () => {
         type: "list",
         choices: roleList
       })
-      .then(function (answer) {
+      .then(function(answer) {
         connection.query(
           `select employee.first_name, employee.last_name, role.title, employee.department
           from employee
           left join role on employee.role_id=role.id  where role.title = "${answer.roleSelect}"`,
           (err, results) => {
-            if (err) {
-              throw err;
-            }
-            console.table(results)
+            if (err) throw err;
+            console.table(results);
             start();
           }
         );
@@ -270,67 +294,65 @@ const viewRole = () => {
 };
 
 const updateRole = () => {
-  connection.query(
-    'select * from department',
-    (err, results) => {
-      if (err) {
-        throw err;
-      }
-      let depts = results.map(e => e.name)
-      inquirer.prompt({
+  connection.query("select * from department", (err, results) => {
+    if (err) throw err;
+    let depts = results.map(e => e.name);
+    inquirer
+      .prompt({
         message: "Which department does the Employee work?",
         type: "list",
         name: "dept",
         choices: depts
-      }).then(function(answer) {
+      })
+      .then(function(answer) {
         connection.query(
           `select * from employee where department = '${answer.dept}'`,
           (err, results) => {
-            if(err) throw err;
-            const empSelect = results.map(e => e.first_name)
-            inquirer.prompt({
-              message: "Which employee would you like to promote/demote?",
-              type: "list",
-              name: "employee",
-              choices: empSelect
-            }).then(function(answer) {
-              const emp = answer.employee
-              connection.query(
-                'select * from role',
-                (err, results) => {
-                  if(err) throw err;
-                  const roles = results.map(e => e.title)
-                  inquirer.prompt({
-                    message: "What role will they have?",
-                    type: "list",
-                    name: "roleChange",
-                    choices: roles
-                  }).then(function(answer) {
-                    for (let i = 0; i < results.length; i++) {
-                    if (answer.roleChange === results[i].title)
-                    connection.query(
-                      `update employee 
+            if (err) throw err;
+            const empSelect = results.map(e => e.first_name);
+            inquirer
+              .prompt({
+                message: "Which employee would you like to promote/demote?",
+                type: "list",
+                name: "employee",
+                choices: empSelect
+              })
+              .then(function(answer) {
+                const emp = answer.employee;
+                connection.query("select * from role", (err, results) => {
+                  if (err) throw err;
+                  const roles = results.map(e => e.title);
+                  inquirer
+                    .prompt({
+                      message: "What role will they have?",
+                      type: "list",
+                      name: "roleChange",
+                      choices: roles
+                    })
+                    .then(function(answer) {
+                      for (let i = 0; i < results.length; i++) {
+                        if (answer.roleChange === results[i].title)
+                          connection.query(
+                            `update employee 
                       set role_id = ${results[i].id}
                       where first_name = '${emp}'`,
-                      (err) => {
-                        if(err) throw err;
-                        console.log('role updated!')
-                        start();
+                            err => {
+                              if (err) throw err;
+                              console.log("role updated!");
+                              start();
+                            }
+                          );
                       }
-                    )
-                    }
-                  })
-                }
-              )
-            })
+                    });
+                });
+              });
           }
-        )
-      })
-    }
-  )
+        );
+      });
+  });
 };
 
 const exit = () => {
-  console.log('Goodbye!')
+  console.log("Goodbye!");
   connection.end();
-}
+};
